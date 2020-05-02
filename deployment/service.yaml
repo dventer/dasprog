@@ -9,7 +9,7 @@ spec:
   - port: 80
     targetPort: 3000
     protocol: TCP
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: tugasjefri
 
@@ -25,6 +25,6 @@ spec:
   - port: 80
     targetPort: 3000
     protocol: TCP
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: tugasadventer
