@@ -1,16 +1,17 @@
 def template_access():
     from jinja2 import Environment, FileSystemLoader
-    import errno
-    import os
+    import os, errno
     ssh_config = os.path.expanduser("~/.ssh/config")
     if not os.path.exists(os.path.dirname(ssh_config)):
         try:
             os.makedirs(os.path.dirname(ssh_config))
-        except OSError as exc: 
+        except OSError as exc:
             if exc.errno != errno.EEXIST:
                 raise
     else:
-        os.replace(ssh_config, f'{ssh_config}.OLD')
+        if os.path.exists(ssh_config):
+            os.replace(ssh_config, f'{ssh_config}.OLD')
+    os.chmod('.ssh/key', 0o600)
     user = 'upj'
     keyfile = os.getcwd()+'/.ssh/key'
     env = Environment(loader=FileSystemLoader('.ssh'), trim_blocks=True, lstrip_blocks=True)
@@ -21,3 +22,4 @@ def template_access():
         file.write(output)
 
 template_access()
+
