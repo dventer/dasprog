@@ -116,7 +116,6 @@ class Channel(object):
         return False
 
     def cmd(self, command, pattern, message=None):
-
         if self.jumphost:
             while not self.is_jumphost_connected():
                 self.jumphost.connect()
@@ -132,10 +131,13 @@ class Channel(object):
             raise RuntimeError("jumphost.invoke_shell(): returned NoneType")
 
         shell.settimeout(5.0)
+        if message:
+            from os import system
         if isinstance(command, list):
             output = []
             for i in command:
                 if message:
+                    system('clear')
                     print(message)
                 result = ''
                 shell.send(i + '\n')
