@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tugasjefri
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tugasjefri
+  template:
+    metadata:
+      name: tugasjefri
+      labels:
+        app: tugasjefri
+    spec:
+      containers:
+      - name: tugasjefri
+        image: venter/hello-k8s
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tugasadventer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tugasadventer
+  template:
+    metadata:
+      name: tugasadventer
+      labels:
+        app: tugasadventer
+    spec:
+      containers:
+      - name: tugasadventer
+        image: venter/tugas-jefri
+        ports:
+        - containerPort: 3000
