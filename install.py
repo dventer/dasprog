@@ -3,7 +3,8 @@ from time import sleep
 from multiprocessing import Process
 import os
 
-wr = open('output.txt', 'a')
+masterLog = open('master.log', 'a')
+workerLog = open('worker.log', 'a')
 user= 'upj'
 masterIP= '172.16.21.170'
 bastion = Channel('jump-host', username=user, key='.ssh/key')
@@ -21,7 +22,7 @@ def installPackageMaster():
         'sudo systemctl enable kubelet && sudo systemctl start kubelet']
     result = master.cmd(command, pattern=pattern, message=msg)
     for i in result:
-        wr.write(i)
+        masterLog.write(i)
 
 def installPackageWorker():
     os.system('clear')
@@ -34,7 +35,7 @@ def installPackageWorker():
         'sudo systemctl enable kubelet && sudo systemctl start kubelet', 'sudo apt-mark hold kubelet kubeadm kubectl']
     result = worker.cmd(command, pattern=pattern, message=msg)
     for i in result:
-        wr.write(i)
+        workerLog.write(i)
 
 def bootstrapMaster():
     os.system('clear')
@@ -48,7 +49,7 @@ def bootstrapMaster():
               'kubectl apply -f calico.yaml']
     result = master.cmd(command, pattern=pattern, message=msg)
     for i in result:
-        wr.write(i)
+        masterLog.write(i)
     while True:
         state = master.cmd(["kubectl get node | grep master | awk '{print $2}'"], pattern=pattern)
         print('Wait until Master Node is Ready...')
@@ -72,7 +73,7 @@ def bootstrapWorker():
                f'sudo kubeadm join k8s-master:6443 --token {TOKEN} --discovery-token-ca-cert-hash sha256:{CERT}']
     result = worker.cmd(command, pattern=pattern, message=msg)
     for i in result:
-        wr.write(i)
+        workerLog.write(i)
     os.system('clear')
     while True:
         state = master.cmd(["kubectl get node | grep worker | awk '{print $2}'"], pattern=pattern)
@@ -109,7 +110,7 @@ def ingressInstall():
         sleep(2)
         os.system('clear')
     for i in result:
-        wr.write(i)
+        masterLog.write(i)
     Deployment()
 
 def Deployment():
@@ -135,7 +136,7 @@ def Deployment():
         sleep(2)
         os.system('clear')
     for i in result:
-        wr.write(i)
+        masterLog.write(i)
 
 
 if __name__ == '__main__':
